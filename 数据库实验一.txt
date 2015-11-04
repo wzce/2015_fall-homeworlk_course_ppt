@@ -1,0 +1,175 @@
+
+(第一大题)
+1、
+CREATE TABLE `order` (
+  `oid` int(11) NOT NULL AUTO_INCREMENT,
+  `cuid` int(11) NOT NULL,
+  `cid` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `totalprice` double NOT NULL,
+  `ordertime` datetime NOT NULL,
+  PRIMARY KEY (`oid`)
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+
+
+2、
+	select name,price from Clothes where price between 100 and 150 order by price desc;
+	
+3、select `order`.cid,name,sum(quantity)from `order`,clothes where 
+	(brand='converse' and `order`.cid=Clothes.cid and launchYear='2015') 
+			Group By `order`.cid,name;
+
+
+
+4、select sum(totalprice) from customer,`order` where 
+		customer.cname='lucy' and customer.cuid=`order`.cuid 
+		and ordertime>'2015-09-01 00:00:00' and ordertime<'2015-09-30 23:59:59'
+
+5、select distinct cname,clothes.name from `order` o1,`order` o2,customer,clothes where(
+								o1.ordertime>'2015-08-01 00:00:00' and o1.ordertime<='2015-08-31 23:59:59' 
+					and o2.ordertime>='2015-08-01 00:00:00' and o2.ordertime<'2015-08-31 23:59:59'
+								and o1.oid<o2.oid and 
+								o1.cid=clothes.cid and brand='adidas' and o1.cuid=customer.cuid)
+								
+								
+								
+								
+								
+6、
+
+/*1.找出2015年nike最新上市最贵的裤子的cid*/	select cid from clothes where type='裤子' and brand='nike' price>= all(select price from clothes where type='裤子') 
+/*找出2015年nike最新上市最贵的外套的cid*/	select cid from clothes where type='外套' and brand='nike' price>= all(select price from clothes where type='外套') 
+
+/*合并写的查询结果*/  select cname from `order` o1,`order` o2,customer where 
+						o1.cuid=o2.cuid and o1.oid<>o2.oid and o1.cuid=customer.cuid
+						and o1.cid in(select cid from clothes where type='裤子' and brand='nike' and price>= all(select price from clothes where type='裤子' and brand='nike'))
+						and o2.cid in(select cid from clothes where type='外套' and brand='nike' and price>= all(select price from clothes where type='外套' and brand='nike'))
+						
+
+
+7、select name,sum(quantity) as total_quantity,brand from clothes,`order` where 
+	`order`.cid=clothes.cid and date(`order`.ordertime)='2014-11-11' 
+			GROUP BY clothes.cid,name,brand order by total_quantity desc limit 3;
+
+
+8、select customer.cuid,cname,phone,sum(totalprice)as ttp from customer,`order`,clothes where customer.cuid=`order`.cuid and
+	`order`.cid=clothes.cid and clothes.brand='nike' and date(`order`.ordertime)='2014-11-11' 
+			GROUP BY customer.cuid,cname,phone order by ttp desc limit 1;
+
+9、
+
+/*查询每笔订单都在800以上的cuid，日期为2014.12.12这天*/	select cuid from `order` where date(ordertime)='2014-12-12' group by cuid having min(totalprice)>800
+
+/*合并的查询结果：*/
+	select * from customer where  cuid in(select cuid from `order` where left(ordertime,10)='2014-12-12' group by cuid having min(totalprice)>'800')
+
+			
+10、delete from customer where cuid not in (select cuid from `order` where ordertime<'2015-09-01 23:59:59')  /*感觉这样表达还是不对*/
+
+11、GRANT update,select,insert on table customer to Mike;
+
+12、Grant select,insert,update(price) on table Clothes to Boss
+			
+			
+第二题：
+
+1、select name,grade from score,student where score.sid=student.sid  and score.course='math' and student.gender='0' limit 2,2
+
+2、select *from student where (department='software' or department='history') and (year(now())- birth) BETWEEN 18 and 20;
+
+3、select count(*),department from Student group by department
+
+4、/*先查询每一门课中分数最高的学生的sid 和分数*/  select sid,course,grade from score s1 where s1.grade>= all(select grade from score s2 where s1.course=s2.course)
+
+	/*合并起来写：*/ select course,grade,name from student,(select sid,course,grade from score s1 where s1.grade>= all(select grade from score s2 where s1.course=s2.course))temp where temp.sid=student.sid;
+	
+	
+5、select student.sid,name,total_grade from student,(select sum(grade) as total_grade,sid from score group by sid)T where student.sid=T.sid and department='software' ORDER BY total_grade desc;	
+
+6、select course,avg(grade) as avg_grade from score GROUP BY course order by avg_grade;
+
+
+7、select name,department from score s1,score s2,student where s1.sid=s2.sid and s1.scid<s2.scid and s1.course='math' and s2.course='operatingsystem' and s1.sid=student.sid;
+
+
+8、select s1.sid,s1.grade,s2.grade from score s1,score s2 where s1.sid=s2.sid and s1.scid<>s2.scid and s1.course='operatingsystem' and s2.course='java' and s1.grade>s2.grade;
+
+
+
+9、/*select student.sid,name,department from student,score where student.sid=score.sid group by score.sid having min(grade)>90;  **这样查询也是可以的**/
+	select student.sid,name,department from student where sid in( select sid from score group by sid having min(grade)>90);
+
+
+
+第三题：
+
+1、/**设置权限的格式
+	格式：grant select on 数据库.* to 用户名@登录主机 identified by “密码”
+**/
+  grant select,insert on platform.* to reader@120.55.190.126 identified by "readerpass";
+
+2、select article_title,writer_name,platform_article.create_time from platform_article,platform_writer 
+	where platform_article.writer_id=platform_writer.writer_id and writer_name='Karen' order by platform_article.create_time desc limit 3;
+	
+	/*注：在sql server中。查询前几的数据使用的是top n的形式。而在MySQL中只能使用limit*/
+	
+3、select article_title ,max(deal_payment)from platform_deal,platform_article
+			where article_title Like '%软件工程%' and platform_article.article_id= platform_deal.article_id group by article_title,platform_article.article_id;
+			
+4、update platform_deal SET deal_payment=100*deal_payment;
+
+
+	
+	
+
+5、
+
+/*产生触发器的语法：*
+		create trigger的语法如下：
+
+CREATE TRIGGER trigger_name
+  trigger_time trigger_event
+  ON table_name
+  FOREACH ROW
+  trigger_stint
+
+（1）trigger_time触发时机，可以是BEFORE或者AFTER，用来指定触发器是在激活它的语句之前或者之后触发；
+（2）trigger_event激活触发器的语句类型，可以是INSERT、UPDATE或DELETE；
+（3）trigger_stint触发器激活时执行的语句，使用BEGIN...END复合语句结构可以包含多个需要执行的语句。
+*/
+		/*最后的结果* 哦，还是以自己的名字的拼音命名的 ***感觉是这样，还有一点问题，先保留吧、、、****/
+	create trigger 'weizuce' after insert on  platform_deal for insert update platform_deal set deal_payment=deal_payment*100;
+
+6、select article_title,sum(deal_payment)as total_payment,count(platform_article.article_id) as num from platform_deal,platform_article where 
+		platform_article.article_id=platform_deal.article_id
+		group by article_title,platform_article.article_id order by total_payment desc;
+		
+	
+7、create view article_view as select platform_article.article_id,platform_article .writer_id,
+	platform_article.article_title,platform_article.content,platform_article.create_time,
+	platform_writer.writer_name,platform_writer.writer_email from platform_article,
+	platform_writer where platform_article.writer_id=platform_writer.writer_id;
+
+	
+8、select platform_article.article_id,platform_article.article_title,date(platform_deal.create_time),count(platform_article.article_id) 
+	from platform_article,platform_deal where platform_article.article_id=platform_deal.article_id 
+		group by platform_article.article_id,platform_article.article_title,date(platform_deal.create_time) order by date(platform_deal.create_time)
+ 
+
+ 
+
+		
+
+第四题：
+	SELECT s1.`Year`,(SELECT sum(Salary) from Summary s2 where s2.`Year`<=s1.Y) from Summary s1;
+
+
+第五题：
+
+	 select T1.y,T1.n,T2.n,(T1.n+T2.n) from 
+				(select year(create_time) as y,gender,count(*) as n from club_vip where gender='F' group by year(create_time),gender)T1,
+				(select year(create_time) as y,gender,count(*) as n from club_vip where gender='M' group by year(create_time),gender)T2 
+		where T1.y=T2.y
+		
+ /**-----------------------以上都是使用MySQL进行查询验证过的-----除非自己没有信心的已标注----------------*/	
+
