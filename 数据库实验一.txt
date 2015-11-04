@@ -1,6 +1,6 @@
-
-(µÚÒ»´óÌâ)
-1¡¢
+ï»¿
+(ç¬¬ä¸€å¤§é¢˜)
+1ã€
 CREATE TABLE `order` (
   `oid` int(11) NOT NULL AUTO_INCREMENT,
   `cuid` int(11) NOT NULL,
@@ -12,20 +12,20 @@ CREATE TABLE `order` (
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 
 
-2¡¢
+2ã€
 	select name,price from Clothes where price between 100 and 150 order by price desc;
 	
-3¡¢select `order`.cid,name,sum(quantity)from `order`,clothes where 
+3ã€select `order`.cid,name,sum(quantity)from `order`,clothes where 
 	(brand='converse' and `order`.cid=Clothes.cid and launchYear='2015') 
 			Group By `order`.cid,name;
 
 
 
-4¡¢select sum(totalprice) from customer,`order` where 
+4ã€select sum(totalprice) from customer,`order` where 
 		customer.cname='lucy' and customer.cuid=`order`.cuid 
 		and ordertime>'2015-09-01 00:00:00' and ordertime<'2015-09-30 23:59:59'
 
-5¡¢select distinct cname,clothes.name from `order` o1,`order` o2,customer,clothes where(
+5ã€select distinct cname,clothes.name from `order` o1,`order` o2,customer,clothes where(
 								o1.ordertime>'2015-08-01 00:00:00' and o1.ordertime<='2015-08-31 23:59:59' 
 					and o2.ordertime>='2015-08-01 00:00:00' and o2.ordertime<'2015-08-31 23:59:59'
 								and o1.oid<o2.oid and 
@@ -35,97 +35,97 @@ CREATE TABLE `order` (
 								
 								
 								
-6¡¢
+6ã€
 
-/*1.ÕÒ³ö2015Äênike×îĞÂÉÏÊĞ×î¹óµÄ¿ã×ÓµÄcid*/	select cid from clothes where type='¿ã×Ó' and brand='nike' price>= all(select price from clothes where type='¿ã×Ó') 
-/*ÕÒ³ö2015Äênike×îĞÂÉÏÊĞ×î¹óµÄÍâÌ×µÄcid*/	select cid from clothes where type='ÍâÌ×' and brand='nike' price>= all(select price from clothes where type='ÍâÌ×') 
+/*1.æ‰¾å‡º2015å¹´nikeæœ€æ–°ä¸Šå¸‚æœ€è´µçš„è£¤å­çš„cid*/	select cid from clothes where type='è£¤å­' and brand='nike' price>= all(select price from clothes where type='è£¤å­') 
+/*æ‰¾å‡º2015å¹´nikeæœ€æ–°ä¸Šå¸‚æœ€è´µçš„å¤–å¥—çš„cid*/	select cid from clothes where type='å¤–å¥—' and brand='nike' price>= all(select price from clothes where type='å¤–å¥—') 
 
-/*ºÏ²¢Ğ´µÄ²éÑ¯½á¹û*/  select cname from `order` o1,`order` o2,customer where 
+/*åˆå¹¶å†™çš„æŸ¥è¯¢ç»“æœ*/  select cname from `order` o1,`order` o2,customer where 
 						o1.cuid=o2.cuid and o1.oid<>o2.oid and o1.cuid=customer.cuid
-						and o1.cid in(select cid from clothes where type='¿ã×Ó' and brand='nike' and price>= all(select price from clothes where type='¿ã×Ó' and brand='nike'))
-						and o2.cid in(select cid from clothes where type='ÍâÌ×' and brand='nike' and price>= all(select price from clothes where type='ÍâÌ×' and brand='nike'))
+						and o1.cid in(select cid from clothes where type='è£¤å­' and brand='nike' and price>= all(select price from clothes where type='è£¤å­' and brand='nike'))
+						and o2.cid in(select cid from clothes where type='å¤–å¥—' and brand='nike' and price>= all(select price from clothes where type='å¤–å¥—' and brand='nike'))
 						
 
 
-7¡¢select name,sum(quantity) as total_quantity,brand from clothes,`order` where 
+7ã€select name,sum(quantity) as total_quantity,brand from clothes,`order` where 
 	`order`.cid=clothes.cid and date(`order`.ordertime)='2014-11-11' 
 			GROUP BY clothes.cid,name,brand order by total_quantity desc limit 3;
 
 
-8¡¢select customer.cuid,cname,phone,sum(totalprice)as ttp from customer,`order`,clothes where customer.cuid=`order`.cuid and
+8ã€select customer.cuid,cname,phone,sum(totalprice)as ttp from customer,`order`,clothes where customer.cuid=`order`.cuid and
 	`order`.cid=clothes.cid and clothes.brand='nike' and date(`order`.ordertime)='2014-11-11' 
 			GROUP BY customer.cuid,cname,phone order by ttp desc limit 1;
 
-9¡¢
+9ã€
 
-/*²éÑ¯Ã¿±Ê¶©µ¥¶¼ÔÚ800ÒÔÉÏµÄcuid£¬ÈÕÆÚÎª2014.12.12ÕâÌì*/	select cuid from `order` where date(ordertime)='2014-12-12' group by cuid having min(totalprice)>800
+/*æŸ¥è¯¢æ¯ç¬”è®¢å•éƒ½åœ¨800ä»¥ä¸Šçš„cuidï¼Œæ—¥æœŸä¸º2014.12.12è¿™å¤©*/	select cuid from `order` where date(ordertime)='2014-12-12' group by cuid having min(totalprice)>800
 
-/*ºÏ²¢µÄ²éÑ¯½á¹û£º*/
+/*åˆå¹¶çš„æŸ¥è¯¢ç»“æœï¼š*/
 	select * from customer where  cuid in(select cuid from `order` where left(ordertime,10)='2014-12-12' group by cuid having min(totalprice)>'800')
 
 			
-10¡¢delete from customer where cuid not in (select cuid from `order` where ordertime<'2015-09-01 23:59:59')  /*¸Ğ¾õÕâÑù±í´ï»¹ÊÇ²»¶Ô*/
+10ã€delete from customer where cuid not in (select cuid from `order` where ordertime<'2015-09-01 23:59:59')  /*æ„Ÿè§‰è¿™æ ·è¡¨è¾¾è¿˜æ˜¯ä¸å¯¹*/
 
-11¡¢GRANT update,select,insert on table customer to Mike;
+11ã€GRANT update,select,insert on table customer to Mike;
 
-12¡¢Grant select,insert,update(price) on table Clothes to Boss
+12ã€Grant select,insert,update(price) on table Clothes to Boss
 			
 			
-µÚ¶şÌâ£º
+ç¬¬äºŒé¢˜ï¼š
 
-1¡¢select name,grade from score,student where score.sid=student.sid  and score.course='math' and student.gender='0' limit 2,2
+1ã€select name,grade from score,student where score.sid=student.sid  and score.course='math' and student.gender='0' limit 2,2
 
-2¡¢select *from student where (department='software' or department='history') and (year(now())- birth) BETWEEN 18 and 20;
+2ã€select *from student where (department='software' or department='history') and (year(now())- birth) BETWEEN 18 and 20;
 
-3¡¢select count(*),department from Student group by department
+3ã€select count(*),department from Student group by department
 
-4¡¢/*ÏÈ²éÑ¯Ã¿Ò»ÃÅ¿ÎÖĞ·ÖÊı×î¸ßµÄÑ§ÉúµÄsid ºÍ·ÖÊı*/  select sid,course,grade from score s1 where s1.grade>= all(select grade from score s2 where s1.course=s2.course)
+4ã€/*å…ˆæŸ¥è¯¢æ¯ä¸€é—¨è¯¾ä¸­åˆ†æ•°æœ€é«˜çš„å­¦ç”Ÿçš„sid å’Œåˆ†æ•°*/  select sid,course,grade from score s1 where s1.grade>= all(select grade from score s2 where s1.course=s2.course)
 
-	/*ºÏ²¢ÆğÀ´Ğ´£º*/ select course,grade,name from student,(select sid,course,grade from score s1 where s1.grade>= all(select grade from score s2 where s1.course=s2.course))temp where temp.sid=student.sid;
+	/*åˆå¹¶èµ·æ¥å†™ï¼š*/ select course,grade,name from student,(select sid,course,grade from score s1 where s1.grade>= all(select grade from score s2 where s1.course=s2.course))temp where temp.sid=student.sid;
 	
 	
-5¡¢select student.sid,name,total_grade from student,(select sum(grade) as total_grade,sid from score group by sid)T where student.sid=T.sid and department='software' ORDER BY total_grade desc;	
+5ã€select student.sid,name,total_grade from student,(select sum(grade) as total_grade,sid from score group by sid)T where student.sid=T.sid and department='software' ORDER BY total_grade desc;	
 
-6¡¢select course,avg(grade) as avg_grade from score GROUP BY course order by avg_grade;
-
-
-7¡¢select name,department from score s1,score s2,student where s1.sid=s2.sid and s1.scid<s2.scid and s1.course='math' and s2.course='operatingsystem' and s1.sid=student.sid;
+6ã€select course,avg(grade) as avg_grade from score GROUP BY course order by avg_grade;
 
 
-8¡¢select s1.sid,s1.grade,s2.grade from score s1,score s2 where s1.sid=s2.sid and s1.scid<>s2.scid and s1.course='operatingsystem' and s2.course='java' and s1.grade>s2.grade;
+7ã€select name,department from score s1,score s2,student where s1.sid=s2.sid and s1.scid<s2.scid and s1.course='math' and s2.course='operatingsystem' and s1.sid=student.sid;
+
+
+8ã€select s1.sid,s1.grade,s2.grade from score s1,score s2 where s1.sid=s2.sid and s1.scid<>s2.scid and s1.course='operatingsystem' and s2.course='java' and s1.grade>s2.grade;
 
 
 
-9¡¢/*select student.sid,name,department from student,score where student.sid=score.sid group by score.sid having min(grade)>90;  **ÕâÑù²éÑ¯Ò²ÊÇ¿ÉÒÔµÄ**/
+9ã€/*select student.sid,name,department from student,score where student.sid=score.sid group by score.sid having min(grade)>90;  **è¿™æ ·æŸ¥è¯¢ä¹Ÿæ˜¯å¯ä»¥çš„**/
 	select student.sid,name,department from student where sid in( select sid from score group by sid having min(grade)>90);
 
 
 
-µÚÈıÌâ£º
+ç¬¬ä¸‰é¢˜ï¼š
 
-1¡¢/**ÉèÖÃÈ¨ÏŞµÄ¸ñÊ½
-	¸ñÊ½£ºgrant select on Êı¾İ¿â.* to ÓÃ»§Ãû@µÇÂ¼Ö÷»ú identified by ¡°ÃÜÂë¡±
+1ã€/**è®¾ç½®æƒé™çš„æ ¼å¼
+	æ ¼å¼ï¼šgrant select on æ•°æ®åº“.* to ç”¨æˆ·å@ç™»å½•ä¸»æœº identified by â€œå¯†ç â€
 **/
   grant select,insert on platform.* to reader@120.55.190.126 identified by "readerpass";
 
-2¡¢select article_title,writer_name,platform_article.create_time from platform_article,platform_writer 
+2ã€select article_title,writer_name,platform_article.create_time from platform_article,platform_writer 
 	where platform_article.writer_id=platform_writer.writer_id and writer_name='Karen' order by platform_article.create_time desc limit 3;
 	
-	/*×¢£ºÔÚsql serverÖĞ¡£²éÑ¯Ç°¼¸µÄÊı¾İÊ¹ÓÃµÄÊÇtop nµÄĞÎÊ½¡£¶øÔÚMySQLÖĞÖ»ÄÜÊ¹ÓÃlimit*/
+	/*æ³¨ï¼šåœ¨sql serverä¸­ã€‚æŸ¥è¯¢å‰å‡ çš„æ•°æ®ä½¿ç”¨çš„æ˜¯top nçš„å½¢å¼ã€‚è€Œåœ¨MySQLä¸­åªèƒ½ä½¿ç”¨limit*/
 	
-3¡¢select article_title ,max(deal_payment)from platform_deal,platform_article
-			where article_title Like '%Èí¼ş¹¤³Ì%' and platform_article.article_id= platform_deal.article_id group by article_title,platform_article.article_id;
+3ã€select article_title ,max(deal_payment)from platform_deal,platform_article
+			where article_title Like '%è½¯ä»¶å·¥ç¨‹%' and platform_article.article_id= platform_deal.article_id group by article_title,platform_article.article_id;
 			
-4¡¢update platform_deal SET deal_payment=100*deal_payment;
+4ã€update platform_deal SET deal_payment=100*deal_payment;
 
 
 	
 	
 
-5¡¢
+5ã€
 
-/*²úÉú´¥·¢Æ÷µÄÓï·¨£º*
-		create triggerµÄÓï·¨ÈçÏÂ£º
+/*äº§ç”Ÿè§¦å‘å™¨çš„è¯­æ³•ï¼š*
+		create triggerçš„è¯­æ³•å¦‚ä¸‹ï¼š
 
 CREATE TRIGGER trigger_name
   trigger_time trigger_event
@@ -133,25 +133,25 @@ CREATE TRIGGER trigger_name
   FOREACH ROW
   trigger_stint
 
-£¨1£©trigger_time´¥·¢Ê±»ú£¬¿ÉÒÔÊÇBEFORE»òÕßAFTER£¬ÓÃÀ´Ö¸¶¨´¥·¢Æ÷ÊÇÔÚ¼¤»îËüµÄÓï¾äÖ®Ç°»òÕßÖ®ºó´¥·¢£»
-£¨2£©trigger_event¼¤»î´¥·¢Æ÷µÄÓï¾äÀàĞÍ£¬¿ÉÒÔÊÇINSERT¡¢UPDATE»òDELETE£»
-£¨3£©trigger_stint´¥·¢Æ÷¼¤»îÊ±Ö´ĞĞµÄÓï¾ä£¬Ê¹ÓÃBEGIN...END¸´ºÏÓï¾ä½á¹¹¿ÉÒÔ°üº¬¶à¸öĞèÒªÖ´ĞĞµÄÓï¾ä¡£
+ï¼ˆ1ï¼‰trigger_timeè§¦å‘æ—¶æœºï¼Œå¯ä»¥æ˜¯BEFOREæˆ–è€…AFTERï¼Œç”¨æ¥æŒ‡å®šè§¦å‘å™¨æ˜¯åœ¨æ¿€æ´»å®ƒçš„è¯­å¥ä¹‹å‰æˆ–è€…ä¹‹åè§¦å‘ï¼›
+ï¼ˆ2ï¼‰trigger_eventæ¿€æ´»è§¦å‘å™¨çš„è¯­å¥ç±»å‹ï¼Œå¯ä»¥æ˜¯INSERTã€UPDATEæˆ–DELETEï¼›
+ï¼ˆ3ï¼‰trigger_stintè§¦å‘å™¨æ¿€æ´»æ—¶æ‰§è¡Œçš„è¯­å¥ï¼Œä½¿ç”¨BEGIN...ENDå¤åˆè¯­å¥ç»“æ„å¯ä»¥åŒ…å«å¤šä¸ªéœ€è¦æ‰§è¡Œçš„è¯­å¥ã€‚
 */
-		/*×îºóµÄ½á¹û* Å¶£¬»¹ÊÇÒÔ×Ô¼ºµÄÃû×ÖµÄÆ´ÒôÃüÃûµÄ ***¸Ğ¾õÊÇÕâÑù£¬»¹ÓĞÒ»µãÎÊÌâ£¬ÏÈ±£Áô°É¡¢¡¢¡¢****/
+		/*æœ€åçš„ç»“æœ* å“¦ï¼Œè¿˜æ˜¯ä»¥è‡ªå·±çš„åå­—çš„æ‹¼éŸ³å‘½åçš„ ***æ„Ÿè§‰æ˜¯è¿™æ ·ï¼Œè¿˜æœ‰ä¸€ç‚¹é—®é¢˜ï¼Œå…ˆä¿ç•™å§ã€ã€ã€****/
 	create trigger 'weizuce' after insert on  platform_deal for insert update platform_deal set deal_payment=deal_payment*100;
 
-6¡¢select article_title,sum(deal_payment)as total_payment,count(platform_article.article_id) as num from platform_deal,platform_article where 
+6ã€select article_title,sum(deal_payment)as total_payment,count(platform_article.article_id) as num from platform_deal,platform_article where 
 		platform_article.article_id=platform_deal.article_id
 		group by article_title,platform_article.article_id order by total_payment desc;
 		
 	
-7¡¢create view article_view as select platform_article.article_id,platform_article .writer_id,
+7ã€create view article_view as select platform_article.article_id,platform_article .writer_id,
 	platform_article.article_title,platform_article.content,platform_article.create_time,
 	platform_writer.writer_name,platform_writer.writer_email from platform_article,
 	platform_writer where platform_article.writer_id=platform_writer.writer_id;
 
 	
-8¡¢select platform_article.article_id,platform_article.article_title,date(platform_deal.create_time),count(platform_article.article_id) 
+8ã€select platform_article.article_id,platform_article.article_title,date(platform_deal.create_time),count(platform_article.article_id) 
 	from platform_article,platform_deal where platform_article.article_id=platform_deal.article_id 
 		group by platform_article.article_id,platform_article.article_title,date(platform_deal.create_time) order by date(platform_deal.create_time)
  
@@ -160,16 +160,16 @@ CREATE TRIGGER trigger_name
 
 		
 
-µÚËÄÌâ£º
+ç¬¬å››é¢˜ï¼š
 	SELECT s1.`Year`,(SELECT sum(Salary) from Summary s2 where s2.`Year`<=s1.Y) from Summary s1;
 
 
-µÚÎåÌâ£º
+ç¬¬äº”é¢˜ï¼š
 
 	 select T1.y,T1.n,T2.n,(T1.n+T2.n) from 
 				(select year(create_time) as y,gender,count(*) as n from club_vip where gender='F' group by year(create_time),gender)T1,
 				(select year(create_time) as y,gender,count(*) as n from club_vip where gender='M' group by year(create_time),gender)T2 
 		where T1.y=T2.y
 		
- /**-----------------------ÒÔÉÏ¶¼ÊÇÊ¹ÓÃMySQL½øĞĞ²éÑ¯ÑéÖ¤¹ıµÄ-----³ı·Ç×Ô¼ºÃ»ÓĞĞÅĞÄµÄÒÑ±ê×¢----------------*/	
+ /**-----------------------ä»¥ä¸Šéƒ½æ˜¯ä½¿ç”¨MySQLè¿›è¡ŒæŸ¥è¯¢éªŒè¯è¿‡çš„-----é™¤éè‡ªå·±æ²¡æœ‰ä¿¡å¿ƒçš„å·²æ ‡æ³¨----------------*/	
 
