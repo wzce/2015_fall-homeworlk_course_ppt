@@ -1,8 +1,8 @@
 
 数据库实验2 第三题：
 
-	1、 select nickname,avater,User.schoolId,School.name from Membership,User,School where Membership.groupId='12' and Membership.memberId=User._Id  and User.schoolId=School._id order by CreatedAt asc limit 5
-	
+	1、 select Urser._id,User.nickname,User.avater,User.schoolId,School.name from Membership,User,School where Membership.groupId='12' and Membership.memberId=User._Id  and User.schoolId=School._id order by CreatedAt asc limit 5
+	/*最早加入，则时间值在比较时应当最小，所以使用升序排序asc*/
 	
 	2、selecet Feed._Id,Feed.createdAt,Feed.image,Feed.content,Group._id,Group.name.Group.icon,Gruop.schoolId,s1.name ,Feed.Authorid,User.nickname,User.avater ,
 		s2._id,s2.name
